@@ -1,5 +1,5 @@
 {
-    "name": "buffalo/elasticsearch",
+    "name": "joeforshaw/buffalo-elasticsearch",
     "description": "Elasticsearch support for craft",
     "type": "craft-plugin",
     "version": "0.01",
@@ -27,9 +27,9 @@
         }
     },
     "extra": {
-        "name": "elasticsearch",
-        "handle": "elasticsearch",
-        "developer": "Built By Buffalo",
+        "name": "buffalo-elasticsearch",
+        "handle": "buffalo-elasticsearch",
+        "developer": "ElasticSearch Craft CMS plugin originally Built By Buffalo",
         "developerUrl": "https://builtbybuffalo.com/",
         "documentationUrl": "???",
         "changelogUrl": "???",
