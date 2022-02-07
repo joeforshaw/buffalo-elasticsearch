@@ -136,7 +136,7 @@ class Elasticsearch extends Plugin
 
         Craft::info(
             Craft::t(
-                'elasticsearch',
+                'buffalo-elasticsearch',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
