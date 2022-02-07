@@ -19,7 +19,7 @@ class Elasticsearch extends Component
 	public function getClient() {
 		if (!$this->client) {
 			$this->client = \Elasticsearch\ClientBuilder::create()
-				->setHosts(['elasticsearch'])
+				->setHosts([getenv('ELASTIC_SEARCH_HOST')])
 				->build();
 		}
 
