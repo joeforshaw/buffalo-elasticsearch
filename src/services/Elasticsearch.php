@@ -34,6 +34,7 @@ class Elasticsearch extends Component
 
 	public function indexName(Element $element) {
 		return implode('_', [
+			getenv('ENVIRONMENT'),
 			Inflector::underscore($element->section->handle),
 			'entries',
 			Inflector::underscore($element->site->handle),
