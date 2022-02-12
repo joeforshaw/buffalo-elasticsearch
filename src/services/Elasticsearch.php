@@ -27,6 +27,10 @@ class Elasticsearch extends Component
 	}
 
 	public function search($search) {
+		if (!str_starts_with($search['index'], getenv('ENVIRONMENT'))) {
+			$search['index'] = getenv('ENVIRONMENT') . '_' . $search['index'];
+		}
+
 		$response = $this->getClient()->search($search);
 
 		return new ElasticsearchResult($response);
