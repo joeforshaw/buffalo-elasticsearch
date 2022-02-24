@@ -107,7 +107,7 @@ class IndexElement extends BaseJob
         if ($field instanceof Assets) {
             $assets = [];
 
-            foreach ($data as $asset) {
+            foreach ($data->all() as $asset) {
                 $assets[] = [
                     'id' => $asset->id,
                     'title' => $asset->title,
@@ -151,7 +151,7 @@ class IndexElement extends BaseJob
         if ($field instanceof Entries || $field instanceof Categories || $field instanceof Tags) {
             $elements = [];
 
-            foreach ($data as $element) {
+            foreach ($data->all() as $element) {
                 $elements[] = [
                     'id' => $element->id,
                     'title' => $element->title,
@@ -165,7 +165,7 @@ class IndexElement extends BaseJob
         if ($field instanceof Matrix) {
             $blocks = [];
 
-            foreach ($data as $block) {
+            foreach ($data->all() as $block) {
                 $blocks[] = $this->getElementContent($block);
             }
 
