@@ -27,8 +27,8 @@ class Elasticsearch extends Component
 	}
 
 	public function search($search) {
-		if (!str_starts_with($search['index'], getenv('ENVIRONMENT'))) {
-			$search['index'] = getenv('ENVIRONMENT') . '_' . $search['index'];
+		if (!str_starts_with($search['index'], $this->environment())) {
+			$search['index'] = $this->environment() . '_' . $search['index'];
 		}
 
 		$response = $this->getClient()->search($search);
@@ -38,7 +38,7 @@ class Elasticsearch extends Component
 
 	public function indexName(Element $element) {
 		return implode('_', [
-			getenv('ENVIRONMENT'),
+			$this->environment(),
 			Inflector::underscore($element->section->handle),
 			'entries',
 			Inflector::underscore($element->site->handle),
@@ -95,5 +95,10 @@ class Elasticsearch extends Component
 		}
 
 		return $this->siteIds;
+	}
+
+	private function environment()
+	{
+		return getenv('ELASTIC_SEARCH_ENVIRONMENT') ?? getenv('ENVIRONMENT');
 	}
 }
