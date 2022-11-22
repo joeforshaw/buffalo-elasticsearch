@@ -99,6 +99,8 @@ class Elasticsearch extends Component
 
 	private function environment()
 	{
-		return getenv('ELASTIC_SEARCH_ENVIRONMENT') ?? getenv('ENVIRONMENT');
+		return getenv('ELASTIC_SEARCH_ENVIRONMENT')
+			? getenv('ELASTIC_SEARCH_ENVIRONMENT')
+			: getenv('ENVIRONMENT');
 	}
 }
