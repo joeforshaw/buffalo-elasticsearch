@@ -27,12 +27,14 @@ class Elasticsearch extends Component
 	}
 
 	public function search($search) {
-		if (!str_starts_with($search['index'], $this->environment())) {
-			$search['index'] = $this->environment() . '_' . $search['index'];
-		}
-
+		$search['index'] = $this->processSearchIndex($search);
 		$response = $this->getClient()->search($search);
+		return new ElasticsearchResult($response);
+	}
 
+	public function autocomplete($search) {
+		$search['index'] = $this->processSearchIndex($search);
+		$response = $this->getClient()->search($search);
 		return new ElasticsearchResult($response);
 	}
 
@@ -95,6 +97,14 @@ class Elasticsearch extends Component
 		}
 
 		return $this->siteIds;
+	}
+
+	private function processSearchIndex(array $search)
+	{
+		if (!str_starts_with($search['index'], $this->environment())) {
+			return $this->environment() . '_' . $search['index'];
+		}
+		return $search['index'];
 	}
 
 	private function environment()

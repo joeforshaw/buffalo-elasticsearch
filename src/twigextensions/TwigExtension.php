@@ -12,11 +12,17 @@ class TwigExtension extends BaseTwigExtension
 	{
 		return [
 			new TwigFunction('advanced_search', [$this, 'advancedSearch']),
+			new TwigFunction('autocomplete', [$this, 'autocomplete']),
 		];
 	}
 
 	public function advancedSearch($search)
 	{
 		return Elasticsearch::getInstance()->service->search($search);
+	}
+
+	public function autocomplete($search)
+	{
+		return Elasticsearch::getInstance()->service->autocomplete($search);
 	}
 }
