@@ -2,7 +2,9 @@
 
 namespace buffalo\elasticsearch\models;
 
+use buffalo\elasticsearch\jobs\DeleteElement;
 use craft\elements\Entry;
+use Craft;
 
 class ElasticsearchResult
 {
@@ -20,18 +22,27 @@ class ElasticsearchResult
 
     public function entries($sort = true, $with = [])
     {
-        $hit_ids = array_map(function($hit) { return $hit['_id']; }, $this->hits());
-        $entries = Entry::find()->id($hit_ids);
+        $hitIds = array_map(function($hit) { return $hit['_id']; }, $this->hits());
+
+        $entries = Entry::find()->id($hitIds);
         if ($with) {
             $entries->with($with);
         }
         $entries = $entries->all();
 
-        if ( ! $sort) return $entries;
+        // Cleanup zombie index entries
+        if (count($entries) < count($hitIds)) {
+            $entryIds = array_map(function($e) { return strval($e->id); }, $entries);
+            foreach (array_diff($hitIds, $entryIds) as $badId) {
+                $this->cleanUpZombieIndex($badId);
+            }
+        }
 
-        usort($entries, function($a, $b) use ($hit_ids) {
-            $a = array_search($a->id, $hit_ids);
-            $b = array_search($b->id, $hit_ids);
+        if (!$sort) return $entries;
+
+        usort($entries, function($a, $b) use ($hitIds) {
+            $a = array_search($a->id, $hitIds);
+            $b = array_search($b->id, $hitIds);
 
             if ($a == $b) {
                 return 0;
@@ -41,5 +52,20 @@ class ElasticsearchResult
         });
 
         return $entries;
+    }
+
+    private function cleanUpZombieIndex($entryId) {
+        $indexName = false;
+        foreach ($this->hits() as $hit) {
+            if ($hit['_id'] === $entryId) {
+                $indexName = $hit['_index'];
+            }
+        }
+        if ($indexName) {
+            Craft::$app->getQueue()->push(new DeleteElement([
+                'elementId' => $entryId,
+                'indexName' => $indexName,
+            ]));
+        }
     }
 }
